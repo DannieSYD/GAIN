@@ -1,0 +1,14 @@
+{
+    "model3d": {
+      "model": "DimeNet",
+      "dimenet": {
+        "hidden_channels": 128,
+        "out_channels": 12,
+        "num_blocks": 6,
+        "num_bilinear": 8,
+        "num_spherical": 7,
+        "num_radial": 6
+      }
+    }
+  }
+  

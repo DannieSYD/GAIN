@@ -1,0 +1,8 @@
+{
+  "model2d": {
+    "model": "GIN",
+    "gin": {
+        "num_layers": 5
+    }
+  }
+}
