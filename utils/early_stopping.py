@@ -13,7 +13,7 @@ class EarlyStopping:
         self.val_loss_min = float('inf')
         self.path = path
 
-    def __call__(self, val_loss, model, optimizer, epoch):
+    def __call__(self, val_loss, model, optimizer, scheduler, epoch):
         score = -val_loss
 
         if math.isnan(score):
@@ -23,7 +23,7 @@ class EarlyStopping:
 
         if self.best_score is None:
             self.best_score = score
-            self.save_checkpoint(val_loss, model, optimizer, epoch)
+            self.save_checkpoint(val_loss, model, optimizer, scheduler, epoch)
         elif score < self.best_score:
             self.counter += 1
             if self.verbose:
@@ -35,7 +35,7 @@ class EarlyStopping:
             self.save_checkpoint(val_loss, model, optimizer, epoch)
             self.counter = 0
 
-    def save_checkpoint(self, val_loss, model, optimizer, epoch):
+    def save_checkpoint(self, val_loss, model, optimizer, scheduler, epoch):
         if self.verbose:
             print(f'Validation loss decreased ({-self.best_score:.6f} --> {val_loss:.6f}). Saving model ...')
-        save_checkpoint(self.path, model, optimizer, epoch)
+        save_checkpoint(self.path, model, optimizer, scheduler, epoch)

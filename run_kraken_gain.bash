@@ -14,12 +14,11 @@
 #SBATCH --no-requeue
 #SBATCH -t 48:00:00
 
-cd /data1/dannie/projects/Auto3D
 
 PORT=$((10000 + (RANDOM % 10001)))
 
 
-python train_4d_moe.py --seed 8889 --dataset Kraken --target sterimol_burL --num_epochs 1500\
+python train_4d_moe.py --seed 8889 --dataset Kraken --target sterimol_burL --num_epochs 2000\
   --modeldss:conf_encoder ClofNet --modeldss:topo_encoder GIN --batch_size 16 \
   --port $PORT --optimizer AdamW --scheduler LambdaLR --learning_rate 0.0002 \
   --weight_decay 0.001 --gpus 0 --patience 400 --gig True --sag True --upc True\

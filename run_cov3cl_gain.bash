@@ -14,7 +14,6 @@
 #SBATCH --no-requeue
 #SBATCH -t 48:00:00
 
-cd /data1/dannie/projects/Auto3D
 
 PORT=$((10000 + (RANDOM % 10001)))
 

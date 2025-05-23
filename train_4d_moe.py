@@ -194,7 +194,8 @@ def run(rank, world_size, config):
     else:
         checkpoint_path = config.checkpoint
     if os.path.exists(checkpoint_path):
-        model, optimizer, start_epoch = load_checkpoint(checkpoint_path, model, optimizer)
+        model, optimizer, scheduler, start_epoch = load_checkpoint(checkpoint_path, model, optimizer=optimizer,
+                                                                   scheduler=scheduler)
         print(f'Loaded checkpoint: {checkpoint_path} at epoch {start_epoch} on rank {rank}')
         dist.barrier()
     if rank == 0:
@@ -212,6 +213,9 @@ def run(rank, world_size, config):
     dist.barrier()
 
     for epoch in range(start_epoch, config.num_epochs):
+        if (epoch-1) % 10 == 0:
+            model, optimizer, scheduler, start_epoch = load_checkpoint(checkpoint_path, model, optimizer=optimizer,
+                                                                       scheduler=scheduler)
         train_loader.batch_sampler.set_epoch(epoch)
 
         loss = train(model, train_loader, optimizer, rank, epoch, config.batch_size, config.z_beta)
@@ -222,7 +226,7 @@ def run(rank, world_size, config):
 
         if rank == 0:
             valid_error = evaluate(model, valid_loader, std, epoch, config.batch_size)
-            early_stopping(valid_error, model, optimizer, epoch)
+            last_ckpt_path = early_stopping(valid_error, model, optimizer, scheduler, epoch)
             if early_stopping.counter == 0:
                 test_error = evaluate(model, test_loader, std, epoch, config.batch_size)
             if early_stopping.early_stop:
